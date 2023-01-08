@@ -84,3 +84,35 @@ export const create = async (req, res) => {
     });
   }
 };
+
+export const update = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    await PostModel.findOneAndUpdate(
+      {
+        _id: postId,
+      },
+      {
+        title: req.body.title,
+        text: req.body.text,
+        imageUrl: req.body.imageUrl,
+        tags: req.body.tags,
+        author: req.userId,
+      },
+      { returnDocument: 'after' },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: 'Failed to get the post' });
+        }
+
+        if (!doc) {
+          return res.status(404).json({ message: 'Post is not found' });
+        }
+
+        res.json(doc);
+      },
+    );
+  } catch (error) {}
+};

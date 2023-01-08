@@ -27,11 +27,11 @@ app.post('/auth/login', loginValidation, UserController.login);
 app.post('/auth/register', registerValidation, UserController.registerUser);
 app.get('/auth/me', checkAuth, UserController.getDetails);
 
-app.get('/posts', PostController.getAll);
-app.get('/posts/:id', PostController.getOne);
+app.get('/posts', checkAuth, PostController.getAll);
+app.get('/posts/:id', checkAuth, PostController.getOne);
 app.post('/posts', [checkAuth, postCreateValidation], PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);
-// app.patch('/posts', PostController.update);
+app.patch('/posts/:id', checkAuth, PostController.update);
 
 app.listen(4444, () => {
   console.log('server is running on port 4444');
