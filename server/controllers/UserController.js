@@ -1,6 +1,9 @@
+import { validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import UserModel from '../models/User.js';
 
-export const getDetails = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const user = await UserModel.findOne({ email: req.body.email });
 
@@ -11,7 +14,7 @@ export const getDetails = async (req, res) => {
     const isValidPassword = await bcrypt.compare(req.body.password, user._doc.passwordHash);
 
     if (!isValidPassword) {
-      return res.status(403).json({ message: 'Login or password is wrong' });
+      return res.status(400).json({ message: 'Login or password is wrong' });
     }
 
     const token = jwt.sign({ _id: user._id }, 'secret123', { expiresIn: '30d' });
@@ -67,7 +70,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const getDetails = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId);
 
@@ -77,9 +80,7 @@ export const login = async (req, res) => {
 
     const { passwordHash, ...userData } = user._doc;
 
-    res.json({
-      ...userData,
-    });
+    res.json(userData);
   } catch (error) {
     console.log(error);
     res.status(500).json({
