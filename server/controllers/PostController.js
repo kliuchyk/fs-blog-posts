@@ -5,7 +5,12 @@ export const getAll = async (req, res) => {
     const posts = await PostModel.find().populate('author').exec();
 
     res.json(posts);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Failed to get list of posts',
+    });
+  }
 };
 
 export const getOne = async (req, res) => {
@@ -115,4 +120,21 @@ export const update = async (req, res) => {
       },
     );
   } catch (error) {}
+};
+
+export const getTags = async (req, res) => {
+  try {
+    const posts = await PostModel.find().limit(5).exec();
+    const tags = posts
+      .map((post) => post.tags)
+      .flat()
+      .slice(0, 5);
+
+    res.json(tags);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Failed to get list of tags',
+    });
+  }
 };

@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
 
 import { registerValidation, loginValidation, postCreateValidation } from './validations.js';
 
@@ -21,6 +22,7 @@ mongoose
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
@@ -43,8 +45,10 @@ app.post(
 );
 app.get('/auth/me', checkAuth, UserController.getDetails);
 
-app.get('/posts', checkAuth, PostController.getAll);
-app.get('/posts/:id', checkAuth, PostController.getOne);
+app.get('/tags', /* checkAuth, */ PostController.getTags);
+
+app.get('/posts', /* checkAuth, */ PostController.getAll);
+app.get('/posts/:id', /* checkAuth, */ PostController.getOne);
 app.post(
   '/posts',
   [checkAuth, postCreateValidation, handleValidationErrors],
